@@ -43,8 +43,7 @@ def get_user_ip_and_city():
 
 def get_wheather_info(lat, long):
     api_key = "7300c952042796002a259cc256140402"
-    url = f"https://api.openweathermap.org/data/2.5/weather?lat={
-        lat}&lon={long}&appid={api_key}&units=metric"
+    url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={long}&appid={api_key}&units=metric"
     try:
         responds = requests.get(url)
         responds.raise_for_status()
