@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import requests
+import socket
 
 
 app = Flask(__name__)
@@ -14,7 +15,7 @@ def welcome():
 def display():
     name = get_user_name()
     ip = get_user_ip()
-    whether, city = get_wheather_info(ip)
+    whether, city = get_wheather_info(get_public_ip())
     return jsonify({"client_ip": ip,
                     "location": city,
                     "greeting": f"Hello, {name}! the temperature is {whether} degrees Celcius in {city}"})
@@ -30,10 +31,17 @@ def get_user_ip():
     return ip
 
 
+def get_public_ip():
+    response = requests.get('https://api64.ipify.org')
+    ip_data = response.json()
+    public_ip = ip_data['origin']
+    return public_ip
+
+
 def get_wheather_info(ip):
     api_key = "46accdfb7cf34ac8b0493214240307"
     url = f"http://api.weatherapi.com/v1/current.json?key={
-        api_key}&q={ip}&aqi=no"
+        api_key}&q={str(ip)}&aqi=no"
     try:
         responds = requests.get(url)
         responds.raise_for_status()
