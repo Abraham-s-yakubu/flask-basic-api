@@ -12,10 +12,9 @@ def welcome():
 
 @app.route('/api/hello', methods=['GET'])
 def display():
-    city = "abuja"
     name = get_user_name()
     ip = get_user_ip()
-    whether = get_wheather_info(city)
+    whether, city = get_wheather_info(ip)
     return jsonify({"client_ip": ip,
                     "location": city,
                     "greeting": f"Hello, {name}! the temperature is {whether} degrees Celcius in {city}"})
@@ -31,16 +30,17 @@ def get_user_ip():
     return ip
 
 
-def get_wheather_info(city):
-    api_key = "7300c952042796002a259cc256140402"
-    url = f"https://api.openweathermap.org/data/2.5/weather?q={
-        city}&appid={api_key}&units=metric"
+def get_wheather_info(ip):
+    api_key = "46accdfb7cf34ac8b0493214240307"
+    url = f"http://api.weatherapi.com/v1/current.json?key={
+        api_key}&q={ip}&aqi=no"
     try:
         responds = requests.get(url)
         responds.raise_for_status()
         data = responds.json()
-        temp = data["main"]["temp"]
-        return temp
+        temp_c = data["current"]["temp_c"]
+        location = data["location"]["region"]
+        return temp_c, location
     except requests.exceptions.RequestException as e:
         print(f"error making API request : {e}")
         return None
